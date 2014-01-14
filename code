@@ -1,0 +1,98 @@
+int LDR_pin = 0;
+int sens = 70;
+int randNum=1;
+int LDRReading;
+
+void setup() {
+  
+  Serial.begin(9600);//initiates analog read bits
+  
+  //Setup Channel A
+  pinMode(12, OUTPUT); //Initiates Motor Channel A pin
+  pinMode(9, OUTPUT); //Initiates Brake Channel A pin
+
+  //Setup Channel B
+  pinMode(13, OUTPUT); //Initiates Motor Channel B pin
+  pinMode(8, OUTPUT);  //Initiates Brake Channel B pin
+  
+  ////Setup Beacon Lamp
+  //pinMode(5,OUTPUT);//Inititates Lamp Motor
+  //pinMode(4,OUTPUT);//Inititates Lamp Motor brake
+  
+  
+}
+
+void loop(){
+  //digitalWrite(5,HIGH);
+  //digitalWrite(4,LOW);
+  
+  LDRReading = analogRead(LDR_pin);
+  //Serial.println(LDRReading);
+  
+  if(LDRReading < sens){
+    randNum= random(2);
+    Serial.println(randNum);
+    delay(100);
+    
+    //to turn right
+    if(randNum == 1){
+      digitalWrite(12,HIGH);
+      digitalWrite(13,HIGH);
+      digitalWrite(9,LOW);
+      digitalWrite(8,LOW);
+      analogWrite(3,100);
+      analogWrite(11,50);
+      
+      delay(1000);
+      
+      digitalWrite(9, HIGH);
+      digitalWrite(8,HIGH);
+      delay(1000);
+      analogWrite(3,0);
+      analogWrite(11,0);
+      
+    }
+    
+    //to turn left
+    else if(randNum == 0){
+      digitalWrite(13,HIGH);
+      digitalWrite(12,HIGH);
+      digitalWrite(8,LOW);
+      digitalWrite(9,LOW);
+      analogWrite(11,100);
+      analogWrite(3,50);
+      
+      delay(1000);
+      
+      digitalWrite(8, HIGH);
+      digitalWrite(9,HIGH);
+      delay(1000);
+      analogWrite(11,0);
+      analogWrite(3,0);
+      
+    }
+    
+  }
+  else{
+   //Motor A forward @ half speed
+    digitalWrite(12, HIGH); //Establishes forward direction of Channel A
+    digitalWrite(9, LOW);   //Disengage the Brake for Channel A
+    analogWrite(3, 100);   //Spins the motor on Channel A at half speed
+    
+    //Motor B forward @ half speed
+    digitalWrite(13, HIGH);  //Establishes forward direction of Channel B
+    digitalWrite(8, LOW);   //Disengage the Brake for Channel B
+    analogWrite(11, 100);    //Spins the motor on Channel B at half speed
+    
+    delay(100);
+    
+    digitalWrite(9, HIGH);
+    digitalWrite(8, HIGH);
+    
+    delay(100);
+    
+    analogWrite(11,0);
+    analogWrite(3,0);
+  }
+    
+}
